@@ -1,4 +1,5 @@
-// CMS Drug Pricing MCP Server
+// CMS Drug Pricing MCP Server — NADAC + state drug utilization via data.medicaid.gov
+// Code Mode only: cms_drug_pricing_search, cms_drug_pricing_execute, query_data, get_schema
 import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerQueryData } from "./tools/query-data";
