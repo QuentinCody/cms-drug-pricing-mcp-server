@@ -1,3 +1,4 @@
+// CMS Drug Pricing MCP Server
 import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerQueryData } from "./tools/query-data";
