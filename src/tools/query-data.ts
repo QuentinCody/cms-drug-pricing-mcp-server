@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { createQueryDataHandler } from "@bio-mcp/shared/staging/utils";
 
-export function registerQueryData(server: McpServer, env?: Partial<Env>) {
+export function registerQueryData(server: McpServer, env?: Partial<Env>): void {
     const handler = createQueryDataHandler("DRUG_PRICING_DATA_DO", "drug_pricing");
 
     server.registerTool(

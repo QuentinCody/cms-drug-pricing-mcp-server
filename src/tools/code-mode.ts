@@ -23,7 +23,7 @@ function toRegistrable(server: McpServer): { tool: (...args: unknown[]) => void 
 export function registerCodeMode(
     server: McpServer,
     env: CodeModeEnv,
-) {
+): void {
     const apiFetch = createDrugPricingApiFetch();
     const registrable = toRegistrable(server);
 

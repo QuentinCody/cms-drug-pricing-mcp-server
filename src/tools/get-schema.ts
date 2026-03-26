@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { createGetSchemaHandler } from "@bio-mcp/shared/staging/utils";
 
-export function registerGetSchema(server: McpServer, env?: Partial<Env>) {
+export function registerGetSchema(server: McpServer, env?: Partial<Env>): void {
     const handler = createGetSchemaHandler("DRUG_PRICING_DATA_DO", "drug_pricing");
 
     server.registerTool(
