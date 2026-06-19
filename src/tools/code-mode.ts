@@ -35,6 +35,8 @@ export function registerCodeMode(
 
     const executeTool = createExecuteTool({
         prefix: "drug_pricing",
+        // Verifiable provenance: drug_pricing_execute results carry a _meta.citation.
+        source: { id: "drug_pricing", name: "CMS Drug Pricing (NADAC)", url: "https://data.cms.gov", license: "U.S. Public Domain" },
         catalog: drugPricingCatalog,
         apiFetch,
         doNamespace: env.DRUG_PRICING_DATA_DO,

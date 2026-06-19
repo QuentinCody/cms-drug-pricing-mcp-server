@@ -27,7 +27,7 @@ export function registerGetSchema(server: McpServer, env?: Partial<Env>): void {
             return handler(
                 handlerRecord,
                 envRecord,
-                (extra as { sessionId?: string })?.sessionId,
+                (extra as Record<string, unknown>),
             );
         },
     );
