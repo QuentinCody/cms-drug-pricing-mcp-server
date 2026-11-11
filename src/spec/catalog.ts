@@ -1,11 +1,15 @@
 import type { ApiCatalog } from "@bio-mcp/shared/codemode/catalog";
+import { datasetEndpoints, datasetNotes, datasetWorkflows, nativeProjectionParams, nativeSortParams } from "./datasets";
+import { datasetSearchEndpoint, datasetSearchWorkflow } from "./dataset-search";
+import { firstTimeEndpoint, firstTimeWorkflow } from "./first-time";
 
 export const drugPricingCatalog: ApiCatalog = {
     name: "CMS Drug Pricing (Medicaid.gov)",
     baseUrl: "https://data.medicaid.gov",
     version: "2026",
     auth: "none",
-    endpointCount: 4,
+    endpointCount: 9,
+    workflows: [...(datasetWorkflows ?? []), datasetSearchWorkflow, firstTimeWorkflow],
     notes:
         "- Uses DKAN datastore API on data.medicaid.gov (no auth required)\n" +
         "- Query params are passed as GET query parameters\n" +
@@ -16,12 +20,15 @@ export const drugPricingCatalog: ApiCatalog = {
         "  Example (two filters, AND-combined): add conditions[1][property]=otc&conditions[1][value]=N&conditions[1][operator]==\n" +
         "  NOTE: the object form conditions[{field}][value] is REJECTED with HTTP 400; conditions must be an array, and uppercase operators (CONTAINS/LIKE) cause a 400 'Database internal error'.\n" +
         "- Pagination: limit={n}&offset={n} (default limit is 50, max varies)\n" +
-        "- Sorting: sort[0][property]={field}&sort[0][order]=asc (or desc)\n" +
-        "- Select specific columns: keys={field1},{field2}\n" +
+        "- Sorting: sorts[0][property]={field}&sorts[0][order]=asc (or desc); singular sort is rejected because DKAN silently ignores it\n" +
+        "- Select specific columns on raw routes: properties[0]={field1}&properties[1]={field2}; full-row evidence helpers reject projection\n" +
         "- Response shape: { results: [...], count: N, schema: {...}, query: {...} }\n" +
         "- NADAC fields: ndc_description, ndc, nadac_per_unit, effective_date, pricing_unit, pharmacy_type_indicator, otc, classification_for_rate_setting, corresponding_generic_drug_nadac_per_unit, corresponding_generic_drug_effective_date, as_of_date\n" +
-        "- Utilization fields: state, ndc, product_name, units_reimbursed, number_of_prescriptions, total_amount_reimbursed, year, quarter, suppression_used, labeler_code, utilization_type",
+        "- Utilization fields: state, ndc, product_name, units_reimbursed, number_of_prescriptions, total_amount_reimbursed, year, quarter, suppression_used, labeler_code, utilization_type" + datasetNotes,
     endpoints: [
+        datasetSearchEndpoint,
+        firstTimeEndpoint,
+        ...datasetEndpoints,
         {
             method: "GET",
             path: "/nadac/current",
@@ -33,7 +40,7 @@ export const drugPricingCatalog: ApiCatalog = {
                 { name: "conditions[0][operator]", type: "string", required: false, description: "Operator for the conditions[0] filter (lowercase)", enum: ["=", "<>", ">", ">=", "<", "<=", "contains", "starts with", "like", "in"] },
                 { name: "limit", type: "number", required: false, description: "Number of results (default 50)" },
                 { name: "offset", type: "number", required: false, description: "Offset for pagination" },
-                { name: "keys", type: "string", required: false, description: "Comma-separated list of fields to return" },
+                ...nativeSortParams, ...nativeProjectionParams,
             ],
         },
         {
@@ -47,7 +54,7 @@ export const drugPricingCatalog: ApiCatalog = {
                 { name: "conditions[0][operator]", type: "string", required: false, description: "Operator for the conditions[0] filter (lowercase)", enum: ["=", "<>", ">", ">=", "<", "<=", "contains", "starts with", "like", "in"] },
                 { name: "limit", type: "number", required: false, description: "Number of results (default 50)" },
                 { name: "offset", type: "number", required: false, description: "Offset for pagination" },
-                { name: "keys", type: "string", required: false, description: "Comma-separated list of fields to return" },
+                ...nativeSortParams, ...nativeProjectionParams,
             ],
         },
         {
@@ -61,7 +68,7 @@ export const drugPricingCatalog: ApiCatalog = {
                 { name: "conditions[0][operator]", type: "string", required: false, description: "Operator for the conditions[0] filter (lowercase)", enum: ["=", "<>", ">", ">=", "<", "<=", "contains", "starts with", "like", "in"] },
                 { name: "limit", type: "number", required: false, description: "Number of results (default 50)" },
                 { name: "offset", type: "number", required: false, description: "Offset for pagination" },
-                { name: "keys", type: "string", required: false, description: "Comma-separated list of fields to return" },
+                ...nativeSortParams, ...nativeProjectionParams,
             ],
         },
         {
@@ -75,7 +82,7 @@ export const drugPricingCatalog: ApiCatalog = {
                 { name: "conditions[0][operator]", type: "string", required: false, description: "Operator for the conditions[0] filter (lowercase)", enum: ["=", "<>", ">", ">=", "<", "<=", "contains", "starts with", "like", "in"] },
                 { name: "limit", type: "number", required: false, description: "Number of results (default 50)" },
                 { name: "offset", type: "number", required: false, description: "Offset for pagination" },
-                { name: "keys", type: "string", required: false, description: "Comma-separated list of fields to return" },
+                ...nativeSortParams, ...nativeProjectionParams,
             ],
         },
     ],

@@ -1,12 +1,13 @@
 import type { McpServer } from "@bio-mcp/shared/mcp";
 import { z } from "zod";
 import { createGetSchemaHandler } from "@bio-mcp/shared/staging/utils";
+import { drugPricingResponse } from "../lib/tool-result";
 
 export function registerGetSchema(server: McpServer, env?: Partial<Env>): void {
     const handler = createGetSchemaHandler("DRUG_PRICING_DATA_DO", "drug_pricing");
 
-    server.registerTool(
-        "drug_pricing_get_schema",
+    for (const name of ["drug_pricing_get_schema", "mcp_drug_pricing_get_schema"]) server.registerTool(
+        name,
         {
             title: "Get Staged Data Schema",
             description:
@@ -24,11 +25,11 @@ export function registerGetSchema(server: McpServer, env?: Partial<Env>): void {
                 data_access_id: args.data_access_id,
             };
             const envRecord: Record<string, unknown> = { ...runtimeEnv };
-            return handler(
+            return drugPricingResponse(() => handler(
                 handlerRecord,
                 envRecord,
                 (extra as Record<string, unknown>),
-            );
+            ), runtimeEnv, name, extra, args);
         },
     );
 }

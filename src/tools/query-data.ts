@@ -1,12 +1,13 @@
 import type { McpServer } from "@bio-mcp/shared/mcp";
 import { z } from "zod";
 import { createQueryDataHandler } from "@bio-mcp/shared/staging/utils";
+import { drugPricingResponse } from "../lib/tool-result";
 
 export function registerQueryData(server: McpServer, env?: Partial<Env>): void {
     const handler = createQueryDataHandler("DRUG_PRICING_DATA_DO", "drug_pricing");
 
-    server.registerTool(
-        "drug_pricing_query_data",
+    for (const name of ["drug_pricing_query_data", "mcp_drug_pricing_query_data"]) server.registerTool(
+        name,
         {
             title: "Query Staged Drug Pricing Data",
             description:
@@ -14,7 +15,7 @@ export function registerQueryData(server: McpServer, env?: Partial<Env>): void {
             inputSchema: {
                 data_access_id: z.string().min(1).describe("Data access ID for the staged dataset"),
                 sql: z.string().min(1).describe("SQL query to execute against the staged data"),
-                limit: z.number().int().positive().max(10000).default(100).optional().describe("Maximum number of rows to return (default: 100)"),
+                limit: z.number().int().positive().max(10000).optional().describe("Maximum number of rows to return (default: 100)"),
             },
         },
         async (args, extra) => {
@@ -25,7 +26,7 @@ export function registerQueryData(server: McpServer, env?: Partial<Env>): void {
                 limit: args.limit,
             };
             const envRecord: Record<string, unknown> = { ...runtimeEnv };
-            return handler(handlerRecord, envRecord);
+            return drugPricingResponse(() => handler(handlerRecord, envRecord), runtimeEnv, name, extra, args);
         },
     );
 }
